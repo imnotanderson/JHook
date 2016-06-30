@@ -1,0 +1,45 @@
+<script>
+
+var XMLHttpReq;
+function createXMLHttpRequest() {
+    try {
+        XMLHttpReq = new ActiveXObject("Msxml2.XMLHTTP");//IE高版本创建XMLHTTP
+    }
+    catch(E) {
+        try {
+            XMLHttpReq = new ActiveXObject("Microsoft.XMLHTTP");//IE低版本创建XMLHTTP
+        }
+        catch(E) {
+            XMLHttpReq = new XMLHttpRequest();//兼容非IE浏览器，直接创建XMLHTTP对象
+        }
+    }
+
+}
+
+function sendAjaxRequest(url) {
+    createXMLHttpRequest();                                //创建XMLHttpRequest对象
+    XMLHttpReq.open("post", url, true);
+    XMLHttpReq.onreadystatechange = processResponse; //指定响应函数
+    XMLHttpReq.send(null);
+}
+//回调函数
+function processResponse() {
+    if (XMLHttpReq.readyState == 4) {
+        if (XMLHttpReq.status == 200) {
+            var text = XMLHttpReq.responseText;
+
+            text = window.decodeURI(text);
+            //f(text);
+            if(text.indexOf("build success:")>=0){
+              url = text.slice(14,text.length)
+               window.location.href=url;
+              return
+            }
+            alert(text);
+        }
+    }
+
+}
+</script>
+
+<button onclick="sendAjaxRequest('http://127.0.0.1:4000/?args=1.1.1')">xxx</button>
